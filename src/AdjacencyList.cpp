@@ -1,41 +1,4 @@
-/*
- *      Simplified PageRank Algorithm
- *            by Ethan Wilson
- *             11/9/2023
- *
- */
-
-#include<iostream>
-#include <vector>
-#include <unordered_map>
-#include <map>
-#include <iomanip>
-using namespace std;
-
-class AdjacencyList {
-private:
-    // vertex = website
-    unordered_map<string, int> vertexIndex; // Maps vertex names to a unique index
-    vector<double> outdegrees; // stores # of outgoing edges for each vertex
-    vector<double> pageRanks; // stores pagerank for each vertex
-    unordered_map<string, vector<string>> edges; // maps each vertex to a list of vertices it points to
-    vector<double> sums;
-    int numVertices; // total vertices
-
-public:
-    AdjacencyList();
-    void addEdge(string from, string to);
-    void PageRank(int n);
-    // helper functions for PageRank
-    void initializePageRanks();
-    void calculatePageRankIteration();
-    void updatePageRanks();
-    void resetSums();
-    void printPageRanks();
-    // more helper functions
-    void addVertexIfNeeded(const string& vertex);
-    void updateOutdegree(const string& from);
-};
+#include "AdjacencyList.h"
 
 AdjacencyList::AdjacencyList() {
     numVertices = 0;
@@ -52,7 +15,7 @@ void AdjacencyList::addVertexIfNeeded(const string& vertex) {
 }
 
 void AdjacencyList::updateOutdegree(const string& from) {
-    // increment outdegree count for the "from: vertex
+    // increment outdegree count for the "from" vertex
     outdegrees[vertexIndex[from]] += 1.0;
 }
 
@@ -87,11 +50,11 @@ void AdjacencyList::calculatePageRankIteration() {
     // calculate pagerank for each vertex
     for (auto it = edges.begin(); it != edges.end(); ++it) {
         int fromIndex = vertexIndex[it->first];
-        //iterate through all "to" vertices the "from" vertex points to
+        // iterate through all "to" vertices the "from" vertex points to
         for (size_t i = 0; i < it->second.size(); i++) {
             string to = it->second[i];
             int toIndex = vertexIndex[to];
-            // pagerank of the from vertex divided by it's outdegree
+            // pagerank of the from vertex divided by its outdegree
             double insert = (1.0 / outdegrees[fromIndex]) * pageRanks[fromIndex];
             sums[toIndex] += insert;
         }
@@ -113,7 +76,7 @@ void AdjacencyList::resetSums() {
 }
 
 void AdjacencyList::printPageRanks() {
-    //sorts and prints page ranks
+    // sorts and prints page ranks
     map<string, double> sortedPageRanks;
     for (auto it = vertexIndex.begin(); it != vertexIndex.end(); ++it) {
         sortedPageRanks[it->first] = pageRanks[it->second];
@@ -122,20 +85,4 @@ void AdjacencyList::printPageRanks() {
     for (auto it = sortedPageRanks.begin(); it != sortedPageRanks.end(); ++it) {
         cout << it->first << " " << fixed << setprecision(2) << it->second << endl;
     }
-}
-
-int main() {
-    int no_of_lines, power_iterations;
-    string from, to;
-    AdjacencyList graph;
-
-    cin >> no_of_lines >> power_iterations;
-    for (int i = 0; i < no_of_lines; i++) {
-        cin >> from >> to;
-        graph.addEdge(from, to);
-    }
-
-    graph.PageRank(power_iterations);
-
-    return 0;
 }
